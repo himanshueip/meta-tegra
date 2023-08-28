@@ -14,7 +14,7 @@ CUDA_LDFLAGS = "\
 
 LDFLAGS:prepend:cuda = "${TOOLCHAIN_OPTIONS} "
 LDFLAGS:append:cuda = " ${CUDA_LDFLAGS}"
-DEBUG_FLAGS:remove:cuda = "-fcanon-prefix-map"
+DEBUG_PREFIX_MAP:remove:cuda = "-fcanon-prefix-map"
 
 def cuda_extract_compiler(compiler, d, prefix='-Xcompiler '):
     args = d.getVar(compiler).split()
@@ -55,7 +55,7 @@ CUFLAGS = "-ccbin ${@cuda_extract_compiler('CXX_FOR_CUDA', d)[0]} ${CUDAFLAGS} $
 CUDA_EXTRA_OECMAKE = '\
   -DCUDA_TOOLKIT_TARGET_DIR=${STAGING_DIR_HOST}/usr/local/cuda-${CUDA_VERSION} \
   -DCUDA_TOOLKIT_ROOT_DIR=${STAGING_DIR_NATIVE}/usr/local/cuda-${CUDA_VERSION} \
-  -DCUDA_NVCC_FLAGS="${CUDA_NVCC_FLAGS}" \
+  -DCUDA_NVCC_FLAGS="${@';'.join(d.getVar('CUDA_NVCC_FLAGS').split())}" \
 '
 EXTRA_OECMAKE:append:cuda = " ${CUDA_EXTRA_OECMAKE}"
 
